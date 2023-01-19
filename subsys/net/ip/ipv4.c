@@ -312,6 +312,32 @@ enum net_verdict net_ipv4_input(struct net_pkt *pkt)
 				   net_ipv4_unspecified_address()))))) ||
 	    (hdr->proto == IPPROTO_TCP &&
 	     net_ipv4_is_addr_bcast(net_pkt_iface(pkt), (struct in_addr *)hdr->dst))) {
+		if (hdr->proto == IPPROTO_UDP) {
+			struct net_udp_hdr hdr, *udp;
+
+			udp = (struct net_udp_hdr *)net_pkt_get_data(pkt, &ipv4_access);
+			if (!udp) {
+				NET_DBG("DROP: no buffer");
+				goto drop;
+			}
+
+			net_udp_set_hdr(pkt, &hdr, udp);
+
+			if (hdr.dst_port != htons(NET_BOOTP_CLIENT_PORT)) {
+				NET_DBG("DROP: not for me");
+				goto drop;
+			}
+			/* Allow all DHCP offers as we might not have IP address
+			 * yet.
+			 */
+			if (net_dhcpv4_is_offer(pkt)) {
+				NET_DBG("DROP: not for me");
+				goto drop;
+			}
+		} else {
+			NET_DBG("DROP: not for me");
+			goto drop;
+		}
 		NET_DBG("DROP: not for me");
 		goto drop;
 	}

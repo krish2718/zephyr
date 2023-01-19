@@ -220,7 +220,7 @@ static struct net_pkt *dhcpv4_create_message(struct net_if *iface, uint8_t type,
 	msg->htype = HARDWARE_ETHERNET_TYPE;
 	msg->hlen  = net_if_get_link_addr(iface)->len;
 	msg->xid   = htonl(iface->config.dhcpv4.xid);
-	msg->flags = htons(DHCPV4_MSG_BROADCAST);
+	msg->flags = htons(DHCPV4_MSG_UNICAST);
 
 	if (ciaddr) {
 		/* The ciaddr field was zero'd out above, if we are
@@ -1297,6 +1297,44 @@ int net_dhcpv4_init(void)
 	 */
 	net_mgmt_init_event_callback(&mgmt4_cb, dhcpv4_iface_event_handler,
 					 NET_EVENT_IF_DOWN | NET_EVENT_IF_UP);
+
+	return 0;
+}
+
+
+int net_dhcpv4_is_offer(struct net_pkt *pkt)
+{
+	struct net_udp_hdr hdr, *udp_hdr;
+	struct net_ipv4_hdr *ipv4_hdr;
+	struct net_dhcpv4_hdr *dhcpv4_hdr;
+	int ret;
+
+	ipv4_hdr = NET_IPV4_HDR(pkt);
+	if (!ipv4_hdr) {
+		return -EINVAL;
+	}
+
+	udp_hdr = net_udp_get_hdr(pkt, &hdr);
+	if (!udp_hdr) {
+		return -EINVAL;
+	}
+
+	if (net_pkt_get_len(pkt) < sizeof(struct net_dhcpv4_hdr)) {
+		return -EINVAL;
+	}
+
+	dhcpv4_hdr = (struct net_dhcpv4_hdr *)net_pkt_get_data(pkt, &ret);
+	if (!dhcpv4_hdr) {
+		return -EINVAL;
+	}
+
+	if (dhcpv4_hdr->op != NET_DHCPV4_BOOTREPLY) {
+		return -EINVAL;
+	}
+
+	if (dhcpv4_hdr->type != NET_DHCPV4_MSGTYPE_OFFER) {
+		return -EINVAL;
+	}
 
 	return 0;
 }

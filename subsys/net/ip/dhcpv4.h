@@ -123,6 +123,8 @@ enum dhcpv4_msg_type {
 
 int net_dhcpv4_init(void);
 
+int net_dhcpv4_is_offer(struct net_pkt *pkt);
+
 #else
 
 #define net_dhcpv4_init() 0
