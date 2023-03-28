@@ -7,3 +7,4 @@ project(wifi)
 
 FILE(GLOB app_sources src/*.c)
 target_sources(app PRIVATE ${app_sources})
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
