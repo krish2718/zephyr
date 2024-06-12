@@ -6,7 +6,7 @@
 
 zephyr_library()
 
-set(OS_AGNOSTIC_BASE ${ZEPHYR_NRFXLIB_MODULE_DIR}/nrf_wifi)
+set(OS_AGNOSTIC_BASE ${ZEPHYR_HAL_NORDIC_MODULE_DIR}/drivers/nrf_wifi)
 
 zephyr_include_directories(
   inc

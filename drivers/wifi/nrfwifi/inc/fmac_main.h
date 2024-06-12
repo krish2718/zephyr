@@ -29,9 +29,9 @@
 
 #include <fmac_api.h>
 #include <host_rpu_umac_if.h>
-#include "ncs_version.h"
+#include <zephyr/version.h>
 
-#define NRF700X_DRIVER_VERSION "1."NCS_VERSION_STRING
+#define NRF700X_DRIVER_VERSION "1."KERNEL_VERSION_STRING
 
 #ifndef CONFIG_NRF700X_RADIO_TEST
 struct nrf_wifi_vif_ctx_zep {

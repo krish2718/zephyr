@@ -17,7 +17,6 @@
 #endif
 #include <zephyr/logging/log.h>
 #include <zephyr/net/wifi_mgmt.h>
-#include <net/l2_wifi_connect.h>
 
 
 #include <util.h>
@@ -934,7 +933,3 @@ DEVICE_DT_INST_DEFINE(0,
 	      CONFIG_WIFI_INIT_PRIORITY, /* prio */
 	      NULL); /* api */
 #endif /* CONFIG_NRF700X_STA_MODE */
-
-#ifdef CONFIG_L2_WIFI_CONNECTIVITY
-CONN_MGR_BIND_CONN(Z_DEVICE_DT_DEV_ID(DT_DRV_INST(0)), L2_CONN_WLAN0);
-#endif /* CONFIG_L2_WIFI_CONNECTIVITY */
