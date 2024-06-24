@@ -852,27 +852,9 @@ static struct wifi_mgmt_ops nrf_wifi_mgmt_ops = {
 #endif /* CONFIG_NET_L2_WIFI_MGMT */
 
 
-#ifdef CONFIG_NET_L2_ETHERNET
-static const struct net_wifi_mgmt_offload wifi_offload_ops = {
-	.wifi_iface.iface_api.init = nrf_wifi_if_init_zep,
-	.wifi_iface.start = nrf_wifi_if_start_zep,
-	.wifi_iface.stop = nrf_wifi_if_stop_zep,
-	.wifi_iface.set_config = nrf_wifi_if_set_config_zep,
-	.wifi_iface.get_config = nrf_wifi_if_get_config_zep,
-	.wifi_iface.get_capabilities = nrf_wifi_if_caps_get,
-	.wifi_iface.send = nrf_wifi_if_send,
-#ifdef CONFIG_NET_STATISTICS_ETHERNET
-	.wifi_iface.get_stats = nrf_wifi_eth_stats_get,
-#endif /* CONFIG_NET_STATISTICS_ETHERNET */
-#ifdef CONFIG_NET_L2_WIFI_MGMT
-	.wifi_mgmt_api = &nrf_wifi_mgmt_ops,
-#endif /* CONFIG_NET_L2_WIFI_MGMT */
-};
-#endif /* CONFIG_NET_L2_ETHERNET */
-
 
 #ifdef CONFIG_NRF700X_STA_MODE
-static const struct zep_wpa_supp_dev_ops wpa_supp_ops = {
+static struct zep_wpa_supp_dev_ops wpa_supp_ops = {
 	.init = nrf_wifi_wpa_supp_dev_init,
 	.deinit = nrf_wifi_wpa_supp_dev_deinit,
 	.scan2 = nrf_wifi_wpa_supp_scan2,
@@ -904,6 +886,29 @@ static const struct zep_wpa_supp_dev_ops wpa_supp_ops = {
 };
 #endif /* CONFIG_NRF700X_STA_MODE */
 #endif /* !CONFIG_NRF700X_RADIO_TEST */
+
+
+#ifdef CONFIG_NET_L2_ETHERNET
+static const struct net_wifi_mgmt_offload wifi_offload_ops = {
+	.wifi_iface.iface_api.init = nrf_wifi_if_init_zep,
+	.wifi_iface.start = nrf_wifi_if_start_zep,
+	.wifi_iface.stop = nrf_wifi_if_stop_zep,
+	.wifi_iface.set_config = nrf_wifi_if_set_config_zep,
+	.wifi_iface.get_config = nrf_wifi_if_get_config_zep,
+	.wifi_iface.get_capabilities = nrf_wifi_if_caps_get,
+	.wifi_iface.send = nrf_wifi_if_send,
+#ifdef CONFIG_NET_STATISTICS_ETHERNET
+	.wifi_iface.get_stats = nrf_wifi_eth_stats_get,
+#endif /* CONFIG_NET_STATISTICS_ETHERNET */
+#ifdef CONFIG_NET_L2_WIFI_MGMT
+	.wifi_mgmt_api = &nrf_wifi_mgmt_ops,
+#endif /* CONFIG_NET_L2_WIFI_MGMT */
+#ifdef CONFIG_NRF700X_STA_MODE
+	.wifi_drv_ops = &wpa_supp_ops,
+#endif /* CONFIG_NRF700X_STA_MODE */
+};
+#endif /* CONFIG_NET_L2_ETHERNET */
+
 
 
 #ifdef CONFIG_NET_L2_ETHERNET

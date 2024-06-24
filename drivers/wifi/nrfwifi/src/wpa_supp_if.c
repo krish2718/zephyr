@@ -443,7 +443,7 @@ void *nrf_wifi_wpa_supp_dev_init(void *supp_drv_if_ctx, const char *iface_name,
 				 struct zep_wpa_supp_dev_callbk_fns *supp_callbk_fns)
 {
 	struct nrf_wifi_vif_ctx_zep *vif_ctx_zep = NULL;
-	const struct device *device = device_get_binding(iface_name);
+	const struct device *device = DEVICE_DT_GET(DT_CHOSEN(zephyr_wifi));
 
 	if (!device) {
 		LOG_ERR("%s: Interface %s not found", __func__, iface_name);
