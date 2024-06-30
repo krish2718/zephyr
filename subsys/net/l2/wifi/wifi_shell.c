@@ -782,7 +782,7 @@ static int cmd_wifi_scan(const struct shell *sh, size_t argc, char *argv[])
 
 	context.sh = sh;
 
-	if (argc > 1) {
+	if (argc > 2) {
 		opt_num = wifi_scan_args_to_params(sh, argc, argv, &params, &do_scan);
 
 		if (opt_num < 0) {
@@ -792,6 +792,21 @@ static int cmd_wifi_scan(const struct shell *sh, size_t argc, char *argv[])
 			PR_WARNING("No valid option(s) found\n");
 			do_scan = false;
 		}
+	} else if (argc > 1) {
+		int if_idx = atoi(argv[1]);
+
+		if (if_idx < 0) {
+			PR_ERROR("Invalid interface index\n");
+			return -ENOEXEC;
+		}
+
+		iface = net_if_get_by_index(if_idx);
+		if (!iface) {
+			PR_ERROR("Interface not found\n");
+			return -ENOEXEC;
+		}
+
+		PR("Using interface %p [%d]\n", iface, if_idx);
 	}
 
 	if (do_scan) {
