@@ -6,7 +6,12 @@
 
 / {
 	nordic_wlan0: nordic_wlan0 {
-		compatible = "nordic,wlan0";
+		compatible = "nordic,wlan";
+		status = "okay";
+	};
+
+	nordic_wlan1: nordic_wlan1 {
+		compatible = "nordic,wlan";
 		status = "okay";
 	};
 
