@@ -50,7 +50,12 @@ config WIFI_NM_WPA_SUPPLICANT_WQ_PRIO
 
 # Supplicant API is stack heavy (buffers + snprintfs) and control interface
 # uses socketpair which pushes the stack usage causing overflow for 2048 bytes.
-# So we set SYSTEM_WORKQUEUE_STACK_SIZE default to 2560 in kernel/Kconfig
+
+config MAIN_STACK_SIZE
+	default 5200
+
+config SHELL_STACK_SIZE
+	default 5200
 
 module = WIFI_NM_WPA_SUPPLICANT
 module-str = WPA supplicant
