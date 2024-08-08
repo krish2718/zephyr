@@ -289,7 +289,7 @@ static inline enum wifi_security_type drv_to_wifi_mgmt(int drv_security_type)
 	case NRF_WIFI_WAPI:
 		return WIFI_SECURITY_TYPE_WAPI;
 	case NRF_WIFI_EAP:
-		return WIFI_SECURITY_TYPE_EAP;
+		return WIFI_SECURITY_TYPE_EAP_TLS;
 	default:
 		return WIFI_SECURITY_TYPE_UNKNOWN;
 	}

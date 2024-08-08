@@ -303,65 +303,11 @@ zephyr_library_sources_ifdef(CONFIG_WIFI_NM_WPA_SUPPLICANT_CRYPTO_ENTERPRISE
 	${HOSTAP_SRC_BASE}/eap_peer/eap_tls.c
 	${HOSTAP_SRC_BASE}/eap_peer/eap_tls_common.c
 	${HOSTAP_SRC_BASE}/eap_common/eap_common.c
-
-	${HOSTAP_SRC_BASE}/eap_peer/eap_peap.c
-	${HOSTAP_SRC_BASE}/eap_common/eap_peap_common.c
-	${HOSTAP_SRC_BASE}/eap_peer/eap_ttls.c
-	${HOSTAP_SRC_BASE}/eap_peer/eap_md5.c
-	${HOSTAP_SRC_BASE}/eap_peer/eap_mschapv2.c
-	${HOSTAP_SRC_BASE}/eap_common/chap.c
-	${HOSTAP_SRC_BASE}/eap_peer/mschapv2.c
-	${HOSTAP_SRC_BASE}/eap_peer/eap_leap.c
-
-	${HOSTAP_SRC_BASE}/eap_peer/eap_psk.c
-	${HOSTAP_SRC_BASE}/eap_common/eap_psk_common.c
-
-	${HOSTAP_SRC_BASE}/eap_peer/eap_fast.c
-	${HOSTAP_SRC_BASE}/eap_peer/eap_fast_pac.c
-	${HOSTAP_SRC_BASE}/eap_common/eap_fast_common.c
-
-	${HOSTAP_SRC_BASE}/eap_peer/eap_pax.c
-	${HOSTAP_SRC_BASE}/eap_common/eap_pax_common.c
-
-	${HOSTAP_SRC_BASE}/eap_peer/eap_sake.c
-	${HOSTAP_SRC_BASE}/eap_common/eap_sake_common.c
-
-	${HOSTAP_SRC_BASE}/eap_peer/eap_gpsk.c
-	${HOSTAP_SRC_BASE}/eap_common/eap_gpsk_common.c
-
-	${HOSTAP_SRC_BASE}/eap_peer/eap_pwd.c
-	${HOSTAP_SRC_BASE}/eap_common/eap_pwd_common.c
-
-	${HOSTAP_SRC_BASE}/eap_peer/eap_eke.c
-	${HOSTAP_SRC_BASE}/eap_common/eap_eke_common.c
-
-	${HOSTAP_SRC_BASE}/eap_peer/eap_ikev2.c
-	${HOSTAP_SRC_BASE}/eap_peer/ikev2.c
-	${HOSTAP_SRC_BASE}/eap_common/eap_ikev2_common.c
-	${HOSTAP_SRC_BASE}/eap_common/ikev2_common.c
-
-	${HOSTAP_SRC_BASE}/eap_peer/eap_sim.c
-	${HOSTAP_SRC_BASE}/eap_common/eap_sim_common.c
-
-	${HOSTAP_SRC_BASE}/eap_peer/eap_aka.c
 )
 
 zephyr_library_compile_definitions_ifdef(CONFIG_WIFI_NM_WPA_SUPPLICANT_CRYPTO_ENTERPRISE
 	EAP_TLS
 	IEEE8021X_EAPOL
-	EAP_PEAP
-	EAP_TTLS
-	EAP_MD5
-	EAP_MSCHAPv2
-	EAP_LEAP
-	EAP_PSK
-	EAP_FAST
-	EAP_PAX
-	EAP_SAKE
-	EAP_GPSK
-	EAP_PWD
-	EAP_EKE
-	EAP_IKEv2
 )
 
 zephyr_library_compile_definitions_ifndef(CONFIG_WIFI_NM_WPA_SUPPLICANT_CRYPTO_ENTERPRISE
@@ -484,4 +430,18 @@ endif()
 zephyr_library_link_libraries_ifndef(CONFIG_WIFI_NM_WPA_SUPPLICANT_CRYPTO_NONE
 	mbedTLS)
 
+zephyr_compile_definitions_ifdef(CONFIG_WIFI_NM_WPA_SUPPLICANT_CRYPTO_ENTERPRISE
+	MBEDTLS_SSL_CLI_C
+	MBEDTLS_SSL_SRV_C
+	MBEDTLS_SSL_TLS_C
+	MBEDTLS_SSL_PROTO_TLS1_2
+	#MBEDTLS_DEBUG_C
+	#MBEDTLS_MD_CAN_SHA384
+	#MBEDTLS_MD_MAX_SIZE=48
+	#CONFIG_MBEDTLS_SSL_IN_CONTENT_LEN=32768
+	#CONFIG_MBEDTLS_SSL_OUT_CONTENT_LEN=32768
+	#CONFIG_MBEDTLS_SSL_IN_BUFFER_LEN=32768
+	#MBEDTLS_SSL_VARIABLE_BUFFER_LENGTH=y
+	#MBEDTLS_SSL_MAX_FRAGMENT_LENGTH=y
+)
 endif()
