@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2024 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+ */
+
+&nrf700x {
+    sck-frequency = <8000000>;
+    /* Wi-Fi Pins used */
+    iovdd-ctrl-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
+    bucken-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
+    host-irq-gpios = <&gpio0 24 GPIO_ACTIVE_HIGH>;
+}
