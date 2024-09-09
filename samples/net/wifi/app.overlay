@@ -1,0 +1,56 @@
+#include <freq.h>
+
+/ {
+	nordic_wlan0: nordic_wlan0 {
+		compatible = "nordic,wlan0";
+		status = "okay";
+	};
+
+	chosen {
+		zephyr,wifi = &nordic_wlan0;
+	};
+
+	nrf70_tx_power_ceiling: nrf70_tx_power_ceiling_node {
+		status = "okay";
+		compatible = "nordic,nrf700x-tx-power-ceiling";
+		max-pwr-2g-dsss = <0x54>;
+		max-pwr-2g-mcs0 = <0x40>;
+		max-pwr-2g-mcs7 = <0x40>;
+		max-pwr-5g-low-mcs0 = <0x34>;
+		max-pwr-5g-low-mcs7 = <0x34>;
+		max-pwr-5g-mid-mcs0 = <0x34>;
+		max-pwr-5g-mid-mcs7 = <0x34>;
+		max-pwr-5g-high-mcs0 = <0x30>;
+		max-pwr-5g-high-mcs7 = <0x30>;
+	};
+};
+
+&pinctrl{
+	pinmux_lpspi1: pinmux_lpspi1 {
+		group0 {
+			pinmux = <&iomuxc_gpio_ad_28_lpspi1_sck>,
+				<&iomuxc_gpio_ad_31_lpspi1_sdi>,
+				<&iomuxc_gpio_ad_30_lpspi1_sdo>,
+				<&iomuxc_gpio_ad_07_gpio9_io06>,
+				<&iomuxc_gpio_ad_01_gpio9_io00>;
+			drive-strength = "high";
+			slew-rate = "fast";
+		};
+	};
+};
+
+&lpspi1 {
+	/* enable interface, use default pin mappings */
+	status = "okay";
+	cs-gpios = <&gpio9 28 GPIO_ACTIVE_LOW>;
+	nrf700x: nrf7002@0 {
+		compatible = "nordic,nrf700x-qspi";
+		status = "okay";
+		reg = <0>;
+		spi-max-frequency = <DT_FREQ_M(8)>;
+
+		iovdd-ctrl-gpios = <&gpio11 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>; /* GPIO DISP_B2_11 - Port 11, Pin 12 */
+		bucken-gpios = <&gpio11 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>; /* GPIO DISP_B2_10 - Port 11, Pin 12 */
+		host-irq-gpios = <&gpio3 13 GPIO_ACTIVE_HIGH>;     /* GPIO AD_14 - Port 3, Pin 13 */
+	};
+};
