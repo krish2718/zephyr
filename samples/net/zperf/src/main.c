@@ -12,6 +12,12 @@
 #include <zephyr/usb/usbd.h>
 #include <zephyr/net/net_config.h>
 
+#if defined(CONFIG_SOC_NRF5340_CPUAPP)
+#include <nrfx_clock.h>
+#endif /* CONFIG_SOC_NRF5340_CPUAPP */
+
+LOG_MODULE_REGISTER(zperf, CONFIG_NET_ZPERF_LOG_LEVEL);
+
 #ifdef CONFIG_NET_LOOPBACK_SIMULATE_PACKET_DROP
 #include <zephyr/net/loopback.h>
 #endif
@@ -41,6 +47,21 @@ static int enable_usb_device_next(void)
 
 int main(void)
 {
+
+#if defined(CONFIG_SOC_NRF5340_CPUAPP)
+	int err;
+
+	/* For optimal performance, the CPU frequency should be set to 128 MHz */
+	err = nrfx_clock_divider_set(NRF_CLOCK_DOMAIN_HFCLK,
+				NRF_CLOCK_HFCLK_DIV_1);
+	err -= NRFX_ERROR_BASE_NUM;
+	if (err != 0) {
+		LOG_WRN("Failed to set 128 MHz: %d", err);
+	}
+#endif /* CONFIG_SOC_NRF5340_CPUAPP */
+
+	printk("Starting %s with CPU frequency: %d MHz\n", CONFIG_BOARD, SystemCoreClock/MHZ(1));
+
 #if defined(CONFIG_USB_DEVICE_STACK)
 	int ret;
 
