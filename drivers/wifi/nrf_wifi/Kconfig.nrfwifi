@@ -559,6 +559,9 @@ config NET_RX_STACK_SIZE
 config NET_TC_TX_COUNT
 	default 1
 
+config NET_L2_ETHERNET_RESERVE_HEADER
+	default y
+
 endif # NETWORKING
 
 config MAIN_STACK_SIZE
