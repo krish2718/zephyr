@@ -61,3 +61,11 @@ Usage
 
 See :ref:`zperf library documentation <zperf>` for more information about
 the library usage.
+
+Using with Wi-Fi interfaces
+***************************
+
+The zperf sample can be used with Wi-Fi interfaces. For example, to use the
+sample with a board that uses ``hostap`` as a Wi-Fi network manager (NM), use the
+``overlay-wifi-nm-hostap.conf`` overlay file. This file configures the sample
+to use the Wi-Fi NM and the hostap.
