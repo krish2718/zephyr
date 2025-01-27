@@ -585,4 +585,8 @@ config WIFI_NM_WPA_CTRL_RESP_TIMEOUT_S
 	  Timeout for the control interface commands to get a response from the
 	  supplicant.
 
+config WIFI_NM_WPA_SUPPLICANT_OWE
+	bool "Opportunistic Wireless Encryption support"
+	depends on !WIFI_NM_WPA_SUPPLICANT_CRYPTO_NONE
+
 endif # WIFI_NM_WPA_SUPPLICANT

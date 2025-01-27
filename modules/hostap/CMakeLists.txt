@@ -707,4 +707,8 @@ if(CONFIG_SAE_PWE_EARLY_EXIT)
   "please use it carefully and do not use it production.")
 endif()
 
+zephyr_library_compile_definitions_ifdef(CONFIG_WIFI_NM_WPA_SUPPLICANT_OWE
+  CONFIG_OWE
+)
+
 endif()
