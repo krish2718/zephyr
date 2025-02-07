@@ -30,6 +30,8 @@ LOG_MODULE_DECLARE(wifi_nrf, CONFIG_WIFI_NRF70_LOG_LEVEL);
 #include "wpa_supp_if.h"
 #include "net_if.h"
 
+#define NRF_WIFI_EXTRA_TX_HEADROOM 100
+
 extern char *net_sprint_ll_addr_buf(const uint8_t *ll, uint8_t ll_len,
 				    char *buf, int buflen);
 
@@ -1002,6 +1004,11 @@ int nrf_wifi_if_get_config_zep(const struct device *dev,
 					 ETHERNET_CHECKSUM_SUPPORT_IPV6_ICMP |
 					 ETHERNET_CHECKSUM_SUPPORT_TCP |
 					 ETHERNET_CHECKSUM_SUPPORT_UDP;
+	}
+#endif
+#ifdef CONFIG_NRF_WIFI_ZERO_COPY_TX
+	if (type == ETHERNET_CONFIG_TYPE_EXTRA_TX_PKT_HEADROOM) {
+		config->extra_tx_pkt_headroom = NRF_WIFI_EXTRA_TX_HEADROOM;
 	}
 #endif
 	ret = 0;

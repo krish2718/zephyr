@@ -808,4 +808,10 @@ config NRF_WIFI_COEX_DISABLE_PRIORITY_WINDOW_FOR_SCAN
 	help
 	  Enable this configuration to disable priority window for scan
 	  in the case of coexistence with Short Range radio.
+
+config NRF_WIFI_ZERO_COPY_TX
+	bool "Zero copy TX"
+	select NET_L2_ETHERNET_RESERVE_HEADER
+	help
+	  Enable this configuration to use zero copy TX.
 endif # WIFI_NRF70
