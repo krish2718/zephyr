@@ -28,6 +28,9 @@
 
 LOG_MODULE_REGISTER(wifi_nrf, CONFIG_WIFI_NRF70_LOG_LEVEL);
 
+#ifdef CONFIG_NRF_WIFI_ZERO_COPY_TX
+unsigned int total_tx_pkts_zc;
+#endif /* CONFIG_NRF_WIFI_ZERO_COPY_TX */
 struct zep_shim_intr_priv *intr_priv;
 
 static void *zep_shim_mem_alloc(size_t size)
@@ -378,6 +381,7 @@ void *net_pkt_to_nbuf(struct net_pkt *pkt)
 #ifdef CONFIG_NRF_WIFI_ZERO_COPY_TX
 	/* For zero-copy, check if packet has single buffer */
 	if (pkt->buffer && !pkt->buffer->frags) {
+		total_tx_pkts_zc++;
 		return net_pkt_to_nbuf_zc(pkt);
 	}
 #endif /* CONFIG_NRF_WIFI_ZERO_COPY_TX */
