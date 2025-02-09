@@ -814,4 +814,9 @@ config NRF_WIFI_ZERO_COPY_TX
 	select NET_L2_ETHERNET_RESERVE_HEADER
 	help
 	  Enable this configuration to use zero copy TX.
+
+config NRF_WIFI_ZERO_COPY_RX
+	bool "Zero copy RX"
+	help
+	  Enable this configuration to use zero copy RX.
 endif # WIFI_NRF70

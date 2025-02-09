@@ -25,12 +25,11 @@
 #include "work.h"
 #include "timer.h"
 #include "osal_ops.h"
+#include "fmac_rx.h"
 
 LOG_MODULE_REGISTER(wifi_nrf, CONFIG_WIFI_NRF70_LOG_LEVEL);
 
-#ifdef CONFIG_NRF_WIFI_ZERO_COPY_TX
 unsigned int total_tx_pkts_zc;
-#endif /* CONFIG_NRF_WIFI_ZERO_COPY_TX */
 struct zep_shim_intr_priv *intr_priv;
 
 static void *zep_shim_mem_alloc(size_t size)
@@ -210,12 +209,10 @@ struct nwb {
 	void (*cleanup_cb)();
 	unsigned char priority;
 	bool chksum_done;
-#ifdef CONFIG_NRF_WIFI_ZERO_COPY_TX
 	struct net_pkt *pkt;
-#endif
 };
 
-static void *zep_shim_nbuf_alloc(unsigned int size)
+static void *zep_shim_nbuf_alloc_tx(unsigned int size)
 {
 	struct nwb *nbuff;
 
@@ -241,19 +238,65 @@ static void *zep_shim_nbuf_alloc(unsigned int size)
 	return nbuff;
 }
 
+static void *zep_shim_nbuf_alloc(unsigned int size)
+{
+	struct nwb *nbuff;
+	/* TODO: Extend API to take iface as argument */
+	struct net_if *iface = net_if_get_first_wifi();
+
+	if (!iface) {
+		return NULL;
+	}
+
+	nbuff = (struct nwb *)k_calloc(sizeof(struct nwb), sizeof(char));
+	if (!nbuff) {
+		return NULL;
+	}
+
+	nbuff->priv = NULL;
+	if (IS_ENABLED(CONFIG_NRF_WIFI_ZERO_COPY_RX)) {
+		nbuff->pkt = net_pkt_rx_alloc_with_buffer(iface, size, AF_UNSPEC, 0, K_MSEC(100));
+		if (!nbuff->pkt) {
+			k_free(nbuff);
+			return NULL;
+		}
+		/* TODO: Handle frags esp. for fixed size and if configured buf_size < NRF70_RX_MAX_DATA_SIZE */
+		nbuff->priv = net_pkt_data(nbuff->pkt);
+	} else {
+		nbuff->priv = k_calloc(size, sizeof(char));
+		if (!nbuff->priv) {
+			k_free(nbuff);
+			return NULL;
+		}
+	}
+
+	nbuff->data = (unsigned char *)nbuff->priv;
+	nbuff->tail = nbuff->data;
+	nbuff->len = 0;
+	nbuff->headroom = 0;
+	nbuff->next = NULL;
+
+	return nbuff;
+}
+
 static void zep_shim_nbuf_free(void *nbuf)
 {
 	if (!nbuf) {
 		return;
 	}
-#ifdef CONFIG_NRF_WIFI_ZERO_COPY_TX
-	if (((struct nwb *)nbuf)->pkt) {
-		net_pkt_unref(((struct nwb *)nbuf)->pkt);
-		((struct nwb *)nbuf)->pkt = NULL;
+
+	if (IS_ENABLED(CONFIG_NRF_WIFI_ZERO_COPY_RX)) {
+		goto out;
 	}
-#endif /* CONFIG_NRF_WIFI_ZERO_COPY_TX */
+
+	if (IS_ENABLED(CONFIG_NRF_WIFI_ZERO_COPY_TX) && ((struct nwb *)nbuf)->pkt) {
+			net_pkt_unref(((struct nwb *)nbuf)->pkt);
+			((struct nwb *)nbuf)->pkt = NULL;
+			goto out;
+	}
 
 	k_free(((struct nwb *)nbuf)->priv);
+out:
 	k_free(nbuf);
 }
 
@@ -338,7 +381,7 @@ static void zep_shim_nbuf_set_chksum_done(void *nbuf, unsigned char chksum_done)
 #include <zephyr/net/ethernet.h>
 #include <zephyr/net/net_core.h>
 
-#ifdef CONFIG_NRF_WIFI_ZERO_COPY_TX
+
 void *net_pkt_to_nbuf_zc(struct net_pkt *pkt)
 {
 	struct nwb *nbuff;
@@ -349,7 +392,7 @@ void *net_pkt_to_nbuf_zc(struct net_pkt *pkt)
 		return NULL;
 	}
 
-	nbuff = zep_shim_nbuf_alloc(100); /* Just for headers */
+	nbuff = zep_shim_nbuf_alloc_tx(100); /* Just for headers */
 	if (!nbuff) {
 		return NULL;
 	}
@@ -370,7 +413,7 @@ void *net_pkt_to_nbuf_zc(struct net_pkt *pkt)
 
 	return nbuff;
 }
-#endif /* CONFIG_NRF_WIFI_ZERO_COPY_TX */
+
 
 void *net_pkt_to_nbuf(struct net_pkt *pkt)
 {
@@ -378,17 +421,17 @@ void *net_pkt_to_nbuf(struct net_pkt *pkt)
 	unsigned char *data;
 	unsigned int len;
 
-#ifdef CONFIG_NRF_WIFI_ZERO_COPY_TX
+if (IS_ENABLED(CONFIG_NRF_WIFI_ZERO_COPY_TX)) {
 	/* For zero-copy, check if packet has single buffer */
 	if (pkt->buffer && !pkt->buffer->frags) {
 		total_tx_pkts_zc++;
 		return net_pkt_to_nbuf_zc(pkt);
 	}
-#endif /* CONFIG_NRF_WIFI_ZERO_COPY_TX */
+}
 
 	len = net_pkt_get_len(pkt);
 
-	nbuff = zep_shim_nbuf_alloc(len + 100);
+	nbuff = zep_shim_nbuf_alloc_tx(len + 100);
 
 	if (!nbuff) {
 		return NULL;
@@ -415,6 +458,24 @@ void *net_pkt_from_nbuf(void *iface, void *frm)
 
 	if (!nwb) {
 		return NULL;
+	}
+
+	if (IS_ENABLED(CONFIG_NRF_WIFI_ZERO_COPY_RX)) {
+		/* TODO: Extend all nwb ops to operate on net_pkt
+		 * to avoid memcpy when doing set_data
+		 */
+#if 1
+		/* Reset packet data to match nwb buffer */
+		struct net_pkt_data_access access = {
+			.size = zep_shim_nbuf_data_size(nwb),
+			.data = zep_shim_nbuf_data_get(nwb),
+		};
+
+		net_pkt_set_data(nwb->pkt, &access);
+#endif
+		/* The packet will now be handed over to n/w stack */
+		pkt = nwb->pkt;
+		goto out;
 	}
 
 	len = zep_shim_nbuf_data_size(nwb);
