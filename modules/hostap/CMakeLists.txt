@@ -78,6 +78,10 @@ zephyr_library_compile_definitions_ifdef(CONFIG_WIFI_NM_WPA_SUPPLICANT_WNM
   CONFIG_WNM
 )
 
+zephyr_library_compile_definitions_ifdef(CONFIG_WIFI_NM_WPA_SUPPLICANT_NAN_USD
+  CONFIG_NAN_USD
+)
+
 zephyr_library_include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/src
   ${HOSTAP_BASE}/
@@ -154,6 +158,12 @@ zephyr_library_sources_ifdef(CONFIG_WIFI_NM_WPA_SUPPLICANT_MBO
 )
 zephyr_library_sources_ifdef(CONFIG_WIFI_NM_WPA_SUPPLICANT_WNM
   ${WIFI_NM_WPA_SUPPLICANT_BASE}/wnm_sta.c
+)
+# nan_usd
+zephyr_library_sources_ifdef(CONFIG_WIFI_NM_WPA_SUPPLICANT_NAN_USD
+  ${HOSTAP_SRC_BASE}/common/nan_de.c
+  ${HOSTAP_SRC_BASE}/ap/nan_usd_ap.c
+  ${WIFI_NM_WPA_SUPPLICANT_BASE}/nan_usd.c
 )
 
 zephyr_library_sources_ifdef(CONFIG_WPA_CLI

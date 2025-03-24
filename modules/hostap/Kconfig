@@ -108,6 +108,11 @@ config WIFI_NM_WPA_SUPPLICANT_WNM
 config WIFI_NM_WPA_SUPPLICANT_RRM
 	bool "Radio Resource Management support"
 	default y
+
+config WIFI_NM_WPA_SUPPLICANT_NAN_USD
+	bool "NAN USD support"
+	default y
+
 endif
 
 config WIFI_NM_WPA_SUPPLICANT_WEP
