@@ -725,20 +725,20 @@ static int nrf_wifi_drv_main_zep(const struct device *dev)
 	struct nrf_wifi_data_config_params data_config = { 0 };
 	struct rx_buf_pool_params rx_buf_pools[MAX_NUM_OF_RX_QUEUES];
 	struct nrf_wifi_vif_ctx_zep *vif_ctx_zep = dev->data;
-	static unsigned int vif_ctx_cnt;
+	static unsigned char fixed_vif_cnt;
 
-	if (vif_ctx_cnt >= MAX_NUM_VIFS) {
+	if (fixed_vif_cnt >= MAX_NUM_VIFS) {
 		LOG_ERR("%s: Max number of VIFs reached", __func__);
 		return -ENOMEM;
 	}
 
-	if (vif_ctx_cnt >= 1) {
+	/* Setup the linkage between the FMAC and the VIF contexts */
+	vif_ctx_zep->rpu_ctx_zep = &rpu_drv_priv_zep.rpu_ctx_zep;
+
+	if (fixed_vif_cnt++ > 0) {
 		/* FMAC is already initialized for VIF-0 */
 		return 0;
 	}
-
-	++vif_ctx_cnt;
-	vif_ctx_zep->rpu_ctx_zep = &rpu_drv_priv_zep.rpu_ctx_zep;
 
 #ifdef CONFIG_NRF70_DATA_TX
 	data_config.aggregation = aggregation;

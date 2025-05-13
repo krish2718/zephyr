@@ -26,6 +26,7 @@ config HEAP_MEM_POOL_ADD_SIZE_HOSTAP
 	def_int 66560 if WIFI_NM_HOSTAPD_AP
 	def_int 48000 if WIFI_NM_WPA_SUPPLICANT_CRYPTO_ENTERPRISE
 	def_int 41808 if WIFI_NM_WPA_SUPPLICANT_AP
+	def_int 40000 if WIFI_NM_MAX_MANAGED_INTERFACES=2
 	# 30K is mandatory, but might need more for long duration use cases
 	def_int 30000
 
