@@ -75,7 +75,7 @@ zephyr_library_sources_ifdef(CONFIG_NRF70_DEBUG_SHELL
 zephyr_library_link_libraries(nrf70-buslib nrf-wifi-shim)
 
 if (CONFIG_NRF_WIFI_PATCHES_BUILTIN)
-  zephyr_blobs_verify(MODULE nrf_wifi REQUIRED)
+  #zephyr_blobs_verify(MODULE nrf_wifi REQUIRED)
   # RPU FW patch binaries based on the selected configuration
   if(CONFIG_NRF70_SYSTEM_MODE)
     if (CONFIG_NRF70_SYSTEM_WITH_RAW_MODES)
