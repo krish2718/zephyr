@@ -5382,84 +5382,13 @@ SHELL_SUBCMD_ADD((wifi), nan, &wifi_cmd_nan,
 
 SHELL_SUBCMD_SET_CREATE(wifi_commands, (wifi));
 
-SHELL_SUBCMD_ADD((wifi), 11k, NULL,
-		 "Configure 11k or get 11k status.\n"
-		 "[enable/disable]\n"
-		 "[-i, --iface=<interface index>] : Interface index.\n",
-		 cmd_wifi_11k,
-		 1, 3);
 
-SHELL_SUBCMD_ADD((wifi), 11k_neighbor_request, NULL,
-		 "Send Neighbor Report Request frame.\n"
-		 "[ssid <ssid>]\n"
-		 "[-i, --iface=<interface index>] : Interface index.\n",
-		 cmd_wifi_11k_neighbor_request,
-		 1, 4);
 
-SHELL_SUBCMD_ADD((wifi), 11v_btm_query, NULL,
-		 "<query_reason: The reason code for a BSS transition management query>.\n"
-		 "[-i, --iface=<interface index>] : Interface index.\n",
-		 cmd_wifi_btm_query,
-		 2, 2);
 
-SHELL_SUBCMD_ADD((wifi), channel, NULL,
-		 "wifi channel setting\n"
-		 "This command is used to set the channel when\n"
-		 "monitor or TX-Injection mode is enabled\n"
-		 "Currently 20 MHz is only supported and no BW parameter is provided\n"
-		 "[-i, --iface=<interface index>] : Interface index.\n"
-		 "[-c, --channel <chan>] : Set a specific channel number to the lower layer\n"
-		 "[-g, --get] : Get current set channel number from the lower layer\n"
-		 "[-h, --help] : Help\n"
-		 "Usage: Get operation example for interface index 1\n"
-		 "wifi channel -g -i1\n"
-		 "Set operation example for interface index 1 (setting channel 5)\n"
-		 "wifi -i1 -c5.\n",
-		 cmd_wifi_channel,
-		 2, 6);
 
-SHELL_SUBCMD_ADD((wifi), connect, NULL,
-		 "Connect to a Wi-Fi AP\n"
-		 "<-s --ssid \"<SSID>\">: SSID.\n"
-		 "[-c --channel]: Channel that needs to be scanned for connection. "
-		 "0:any channel.\n"
-		 "[-b, --band] 0: any band (2:2.4GHz, 5:5GHz, 6:6GHz]\n"
-		 "[-p, --passphrase]: Passphrase (valid only for secure SSIDs)\n"
-		 "[-k, --key-mgmt]: Key Management type (valid only for secure SSIDs)\n"
-		 "0:None, 1:WPA2-PSK, 2:WPA2-PSK-256, 3:SAE-HNP, 4:SAE-H2E, 5:SAE-AUTO, 6:WAPI,"
-		 "7:EAP-TLS, 8:WEP, 9: WPA-PSK, 10: WPA-Auto-Personal, 11: DPP\n"
-		 "12: EAP-PEAP-MSCHAPv2, 13: EAP-PEAP-GTC, 14: EAP-TTLS-MSCHAPv2,\n"
-		 "15: EAP-PEAP-TLS, 20: SAE-EXT-KEY\n"
-		 "[-w, --ieee-80211w]: MFP (optional: needs security type to be specified)\n"
-		 ": 0:Disable, 1:Optional, 2:Required.\n"
-		 "[-m, --bssid]: MAC address of the AP (BSSID).\n"
-		 "[-t, --timeout]: Timeout for the connection attempt (in seconds).\n"
-		 "[-a, --anon-id]: Anonymous identity for enterprise mode.\n"
-		 "[-K, --key1-pwd for eap phase1 or --key2-pwd for eap phase2]:\n"
-		 "Private key passwd for enterprise mode. Default no password for private key.\n"
-		 "[-S, --wpa3-enterprise]: WPA3 enterprise mode:\n"
-		 "Default 0: Not WPA3 enterprise mode.\n"
-		 "1:Suite-b mode, 2:Suite-b-192-bit mode, 3:WPA3-enterprise-only mode.\n"
-		 "[-T, --TLS-cipher]: 0:TLS-NONE, 1:TLS-ECC-P384, 2:TLS-RSA-3K.\n"
-		 "[-A, --verify-peer-cert]: apply for EAP-PEAP-MSCHAPv2 and EAP-TTLS-MSCHAPv2\n"
-		 "Default 0. 0:not use CA to verify peer, 1:use CA to verify peer.\n"
-		 "[-V, --eap-version]: 0 or 1. Default 1: eap version 1.\n"
-		 "[-I, --eap-id1]: Client Identity. Default no eap identity.\n"
-		 "[-P, --eap-pwd1]: Client Password.\n"
-		 "Default no password for eap user.\n"
-		 "[-R, --ieee-80211r]: Use IEEE80211R fast BSS transition connect."
-		 "[-e, --server-cert-domain-exact]: Full domain names for server certificate match.\n"
-		 "[-x, --server-cert-domain-suffix]: Domain name suffixes for server certificate match.\n"
-		 "[-h, --help]: Print out the help for the connect command.\n"
-		 "[-i, --iface=<interface index>] : Interface index.\n",
-		 cmd_wifi_connect,
-		 2, 46);
 
-SHELL_SUBCMD_ADD((wifi), disconnect, NULL,
-		 "Disconnect from the Wi-Fi AP.\n"
-		 "[-i, --iface=<interface index>] : Interface index.\n",
-		 cmd_wifi_disconnect,
-		 1, 2);
+
+
 
 SHELL_SUBCMD_ADD((wifi), mode, NULL,
 		 SHELL_HELP("Mode operational setting",
