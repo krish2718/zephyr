@@ -7,7 +7,7 @@ tests:
       - native_sim
       - native_sim/native/64
     tags:
-      - wifi
+      - wifi_hwsim
       - hwsim
       - networking
       - drivers

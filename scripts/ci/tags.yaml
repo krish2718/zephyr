@@ -99,6 +99,17 @@ wifi:
     - include/zephyr/net/wifi_nm.h
     - include/zephyr/net/wifi_utils.h
     - modules/nrf_wifi/
+
+wifi_hwsim:
+  files:
+    - modules/hostap/
+    - modules/lib/hostap/
+    - subsys/net/l2/wifi/
+    - drivers/wifi/hwsim/
+    - include/zephyr/net/wifi.h
+    - include/zephyr/net/wifi_mgmt.h
+    - include/zephyr/net/wifi_nm.h
+    - include/zephyr/net/wifi_utils.h
 # zephyr-keep-sorted-stop
 
 # cbprintf:
